@@ -26,7 +26,6 @@ class Authenticate
             ], 401);
         }
 
-
         $accessToken = PersonalAccessToken::findToken($token);
 
         if (!$accessToken) {
@@ -35,7 +34,6 @@ class Authenticate
                 'message' => 'Token tidak valid.',
             ], 401);
         }
-
 
         $request->setUserResolver(function () use ($accessToken) {
             return $accessToken->tokenable;

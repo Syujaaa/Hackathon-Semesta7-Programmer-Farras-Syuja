@@ -30,13 +30,51 @@ export default function Sidebar() {
     });
   };
 
-  if (!authUser) return null;
+  if (!authUser) {
+    return (
+      <nav className="navbar navbar-expand-lg bg-body-tertiary">
+        <div className="container">
+          <Link className="navbar-brand" to="/">
+            System vote
+          </Link>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div
+            className="collapse navbar-collapse mx-auto"
+            id="navbarNavDropdown"
+          >
+            <ul className="navbar-nav">
+              <li className="nav-item">
+                <Link className="nav-link" aria-current="page" to="/">
+                  Daftar event
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/login">
+                  Login
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav className="navbar bg-body-tertiary fixed-top">
       <div className="container">
         <a className="navbar-brand" href="#">
-          Offcanvas navbar
+          {authUser?.name || "Admin"}
         </a>
         <button
           className="navbar-toggler"
@@ -55,7 +93,7 @@ export default function Sidebar() {
         >
           <div className="offcanvas-header">
             <h5 className="offcanvas-title" id="offcanvasNavbarLabel">
-              Offcanvas
+              {authUser?.name || "Admin"}
             </h5>
             <button
               type="button"
@@ -67,46 +105,20 @@ export default function Sidebar() {
           <div className="offcanvas-body">
             <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="#">
-                  Home
-                </a>
+                <Link
+                  className="nav-link active"
+                  aria-current="page"
+                  to={"/dashboard"}
+                >
+                  Dashboard
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">
-                  Link
-                </a>
+                <Link className="nav-link" to={"/jadwal"}>
+                  Voting
+                </Link>
               </li>
-              <li className="nav-item dropdown">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Dropdown
-                </a>
-                <ul className="dropdown-menu">
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Action
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Another action
-                    </a>
-                  </li>
-                  <li>
-                    <hr className="dropdown-divider" />
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Something else here
-                    </a>
-                  </li>
-                </ul>
-              </li>
+
               <li className="nav-item mt-auto">
                 <a onClick={handleLogout} className="nav-link" href="#">
                   Logout

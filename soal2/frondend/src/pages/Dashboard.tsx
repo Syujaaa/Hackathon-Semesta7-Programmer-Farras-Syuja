@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 interface User {
   name: string;
@@ -19,7 +20,7 @@ export default function Dashboard() {
     <div className="container mt-4">
       <h2 className="mb-4">Super Admin Dashboard</h2>
       <div className="alert alert-primary" role="alert">
-        Selamat datang, <strong>{user?.name || "Super Admin"}</strong> 🎉
+        Selamat datang, <strong>{user?.name || "Admin"}</strong> 🎉
       </div>
 
       <div className="row">
@@ -39,10 +40,10 @@ export default function Dashboard() {
           <div className="card shadow-sm">
             <div className="card-body text-center">
               <h5 className="card-title">Voting</h5>
-              <p className="card-text">Atur voting baru</p>
-              <a href="/voting" className="btn btn-success">
-                Buat Voting
-              </a>
+              <p className="card-text">Atur voting</p>
+              <Link to="/jadwal" className="btn btn-success">
+                Atur Voting
+              </Link>
             </div>
           </div>
         </div>

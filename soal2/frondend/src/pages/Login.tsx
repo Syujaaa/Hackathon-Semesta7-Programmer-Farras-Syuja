@@ -20,12 +20,10 @@ export default function Login() {
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [showPassword, setShowPassword] = useState(false);
-  const [submitting, setSubmitting] = useState(false); 
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
-
   const { authUser, setAuthUser, loading } = useAuth();
-
 
   useEffect(() => {
     if (!loading && authUser) {
@@ -36,7 +34,6 @@ export default function Login() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-   
     const newErrors: { [key: string]: string } = {};
     if (!form.email) newErrors.email = "Email wajib diisi.";
     if (!form.password) newErrors.password = "Password wajib diisi.";
@@ -50,10 +47,8 @@ export default function Login() {
     try {
       const res = await API.post("/login", form);
 
-   
       localStorage.setItem("token", res.data.token);
 
-   
       setAuthUser(res.data.user);
 
       Swal.fire({
@@ -89,14 +84,13 @@ export default function Login() {
   };
 
   return (
-    <div className="col-md-4 mt-5 mx-auto">
+    <div className="col-md-3 mt-5 mx-auto">
       <div className="card shadow">
         <div className="card-header text-center p-3">
           <h2>Login</h2>
         </div>
         <div className="card-body p-4">
           <form method="post" onSubmit={handleLogin}>
-           
             <div className="form-floating mb-3">
               <input
                 type="email"
@@ -116,7 +110,6 @@ export default function Login() {
               )}
             </div>
 
-            
             <div className="form-floating mb-3 position-relative">
               <input
                 type={showPassword ? "text" : "password"}

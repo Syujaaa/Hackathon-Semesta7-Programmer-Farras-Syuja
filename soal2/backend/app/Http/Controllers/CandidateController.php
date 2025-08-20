@@ -2,54 +2,61 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Candidate;
+use App\Models\Event;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CandidateController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function store(Request $request, $eventId)
     {
-        return response()->json(Candidate::with('event')->get());
+        $event = Event::find($eventId);
+        if (!$event) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Event tidak ditemukan',
+            ], 404);
+        }
+
+        $request->validate([
+            'candidates' => 'required|array|min:1',
+            'candidates.*.name' => 'required|string|max:255',
+            'candidates.*.vision' => 'nullable|string',
+            'candidates.*.mission' => 'nullable|string',
+            'candidates.*.photo' => 'nullable|image|max:2048',
+        ]);
+
+        $saved = [];
+
+        foreach ($request->candidates as $candidateData) {
+            $path = null;
+
+            if (isset($candidateData['photo']) && $candidateData['photo'] instanceof \Illuminate\Http\UploadedFile) {
+                $path = $candidateData['photo']->store('candidates', 'public');
+            }
+
+            $saved[] = Candidate::create([
+                'event_id' => $event->id,
+                'name' => $candidateData['name'],
+                'vision' => $candidateData['vision'] ?? null,
+                'mission' => $candidateData['mission'] ?? null,
+                'photo' => $path,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Kandidat berhasil ditambahkan',
+            'data' => $saved
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function getCandidates($eventId)
     {
-        $candidate = Candidate::create($request->all());
-        return response()->json($candidate, 201);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $candidate = Candidate::with('event')->findOrFail($id);
-        return response()->json($candidate);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $candidate = Candidate::findOrFail($id);
-        $candidate->update($request->all());
-        return response()->json($candidate);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $candidate = Candidate::findOrFail($id);
-        $candidate->delete();
-        return response()->json(null, 204);
+        $kandidat = Candidate::where('event_id', $eventId)->get();
+        return response()->json([
+            'data' => $kandidat
+        ]);
     }
 }

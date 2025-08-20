@@ -14,10 +14,11 @@ return new class extends Migration {
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->dateTime('start_time');
-            $table->dateTime('end_time');
-            $table->enum('status', ['active', 'finished'])->default('active');
-            $table->timestamps();
+            $table->dateTimeTz('start_at');
+            $table->dateTimeTz('end_at');
+            $table->enum('status', ['upcoming','active','ended'])->default('upcoming')->index();
+            $table->timestampsTz();
+            $table->index(['start_at','end_at']);
         });
     }
 

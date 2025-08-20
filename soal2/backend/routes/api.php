@@ -10,6 +10,8 @@ use App\Http\Controllers\VoteController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SelfieController;
+use App\Http\Controllers\VotingPeriodController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -37,10 +39,42 @@ Route::middleware('auth')->group(function () {
             'user' => [
                 'id' => $request->user()->id,
                 'name' => $request->user()->name,
-                'role' => $request->user()->role, 
+                'role' => $request->user()->role,
             ]
         ]);
     });
 
 });
+
+// Route::get('/events', [EventController::class, 'index']);     // ?scope=active|archived|upcoming|all
+// Route::post('/events', [EventController::class, 'store']);
+// Route::get('/events/{event}', [EventController::class, 'show']);
+
+// Route::get('/events/datatable', [EventController::class, 'datatable']); // DataTables server-side
+// Route::delete('/events/{event}', [EventController::class, 'destroy']);
+// Route::middleware(['auth'])->group(function () {
+// });
+
+Route::resource('events', EventController::class);
+Route::post('/events/{eventId}/candidates', [CandidateController::class, 'store']);
+Route::get('/events/{eventId}/candidates', [CandidateController::class, 'getCandidates']);
+
+Route::post('/vote-selfie', function (Request $request) {
+    if ($request->hasFile('photo')) {
+        $path = $request->file('photo')->store('selfies', 'public');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Foto berhasil disimpan',
+            'path' => $path
+        ]);
+    }
+
+    return response()->json([
+        'success' => false,
+        'message' => 'Tidak ada foto terkirim'
+    ], 400);
+});
+
+Route::post('/vote/selfie', [SelfieController::class, 'store']);
 
